@@ -25,12 +25,30 @@ async function run() {
     await client.connect();
     const database = client.db(`${process.env.DB_NAME}`);
     const productCollection = database.collection('products');
+
     // POST API
 
     app.post('/add-products', async (req, res) => {
-      const cursor = req.body;
-      const products = await productCollection.insertOne(cursor);
-      res.json(products);
+      const products = req.body;
+      const results = await productCollection.insertOne(products);
+      res.json(results);
+    });
+
+    // GET API
+
+    app.get('/all-products', async (req, res) => {
+      const cursor = await productCollection.find({});
+      const products = await cursor.toArray();
+      res.send(products);
+    });
+
+    // DELETE API
+
+    app.delete('/product/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = productCollection.deleteOne(query);
+      res.json(result);
     });
   } finally {
     // await client.close()
