@@ -23,7 +23,15 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     await client.connect();
-    console.log('database Connect');
+    const database = client.db(`${process.env.DB_NAME}`);
+    const productCollection = database.collection('products');
+    // POST API
+
+    app.post('/add-products', async (req, res) => {
+      const cursor = req.body;
+      const products = await productCollection.insertOne(cursor);
+      res.json(products);
+    });
   } finally {
     // await client.close()
   }
