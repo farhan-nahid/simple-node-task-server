@@ -42,12 +42,19 @@ async function run() {
       res.send(products);
     });
 
+    app.get('/product/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await productCollection.findOne(query);
+      res.send(result);
+    });
+
     // DELETE API
 
     app.delete('/product/:id', async (req, res) => {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
-      const result = productCollection.deleteOne(query);
+      const result = await productCollection.deleteOne(query);
       res.json(result);
     });
   } finally {
