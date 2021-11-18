@@ -49,6 +49,24 @@ async function run() {
       res.send(result);
     });
 
+    // UPDATE API
+
+    app.put('/product/:id', async (req, res) => {
+      const id = req.params.id;
+      const product = req.body;
+      const filter = { _id: ObjectId(id) };
+      // const option = {:true}
+      const updatingProduct = {
+        $set: {
+          name: product.name,
+          price: product.price,
+          quantity: product.quantity,
+        },
+      };
+      const result = productCollection.updateOne(filter, updatingProduct);
+      res.json(result);
+    });
+
     // DELETE API
 
     app.delete('/product/:id', async (req, res) => {
